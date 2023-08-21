@@ -1,5 +1,4 @@
 <?php
-
 require_once "../connection.php";
 
 include_once "../controllers/racerController.php";
