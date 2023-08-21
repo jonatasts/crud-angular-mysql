@@ -3,13 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { LoadingController } from '@ionic/angular';
 
-interface Racer {
-  id: string;
-  name: string;
-  wins: string;
-  years: string;
-  photo: string;
-}
+import { Racer } from 'src/app/models/racer.model';
+import { RacerService } from 'src/app/services/racer.service';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +18,8 @@ export class HomePage {
 
   constructor(
     private http: HttpClient,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private racerService: RacerService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -55,26 +51,11 @@ export class HomePage {
     this.searchRacers(searchText);
   }
 
-  private searchRacers(search: string) {
-    const params = new HttpParams().set('search', search);
-
-    this.http
-      .get('http://localhost/crud-angular-mysql/backend/api/racers.php', {
-        params,
-        observe: 'response',
-      })
-      .subscribe((response) => {
-        this.racers = response.body as Racer[];
-      });
+  private async searchRacers(search: string) {
+    this.racers = await this.racerService.searchRacers(search);
   }
 
-  private getRacers() {
-    this.http
-      .get('http://localhost/crud-angular-mysql/backend/api/racers.php', {
-        observe: 'response',
-      })
-      .subscribe((response) => {
-        this.racers = response.body as Racer[];
-      });
+  private async getRacers() {
+    this.racers = await this.racerService.selectRacers();
   }
 }
