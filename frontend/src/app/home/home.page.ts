@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { LoadingController } from '@ionic/angular';
 
-interface Player {
+interface Racer {
   id: string;
   name: string;
   wins: string;
@@ -17,8 +17,9 @@ interface Player {
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  public players: Player[] = [];
-  public isPlayers: boolean = false;
+  public racers: Racer[] = [];
+  public initialized: boolean = false;
+  public isRacers: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -33,12 +34,15 @@ export class HomePage {
 
     try {
       loading.present();
-      this.getPlayers('');
+      this.getRacers();
 
       await new Promise((f) => setTimeout(f, 2000));
-      this.isPlayers = true;
+      this.isRacers = true;
+      this.initialized = true;
     } catch (error) {
       console.log(error);
+
+      this.initialized = true;
       await loading.dismiss();
     }
   }
@@ -48,21 +52,29 @@ export class HomePage {
   handleInput(event: any) {
     const searchText = event.target.value;
 
-    this.getPlayers(searchText);
+    this.searchRacers(searchText);
   }
 
-  getPlayers(search: string) {
+  private searchRacers(search: string) {
     const params = new HttpParams().set('search', search);
 
     this.http
-      .get('http://localhost/crud-angular-mysql/backend/players.php', {
+      .get('http://localhost/crud-angular-mysql/backend/api/racers.php', {
         params,
         observe: 'response',
       })
       .subscribe((response) => {
-        console.log(response);
+        this.racers = response.body as Racer[];
+      });
+  }
 
-         this.players = response.body as Player[];
+  private getRacers() {
+    this.http
+      .get('http://localhost/crud-angular-mysql/backend/api/racers.php', {
+        observe: 'response',
+      })
+      .subscribe((response) => {
+        this.racers = response.body as Racer[];
       });
   }
 }
