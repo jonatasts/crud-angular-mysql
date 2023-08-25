@@ -13,7 +13,7 @@ import { Racer } from '../models/racer.model';
 })
 export class RacerService extends WebApiService {
   serviceUrl: string = environment.racerServer;
-  webApiSuffix: string = 'backend/racers/api/';
+  webApiSuffix: string = 'racers/api/';
 
   public get racerServiceUrl(): string {
     return this.serviceUrl + this.webApiSuffix + 'index.php';
